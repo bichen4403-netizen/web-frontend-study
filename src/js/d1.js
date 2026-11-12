@@ -1,42 +1,23 @@
-const D1 = {
-  presetTree: [50, 30, 70, 20, 40, 60, 80],
-  defaultValue: 35,
-  range: [1, 99],
-  randomSize: 9,
-  text: {
-    idle: '在右侧输入一个 {min}～{max} 的整数，点「开始插入」，再用「下一步」一步一步看它怎么走。',
-    invalid: '请输入 {min}～{max} 之间的整数。',
-    start: '准备插入 {v}：它先停在树的上方，从根结点 {root} 开始比较。',
-    goLeft: '{v} < {x}，往左走，接下来和 {next} 比较。',
-    goRight: '{v} > {x}，往右走，接下来和 {next} 比较。',
-    goLeftEnd: '{v} < {x}，往左走，可是 {x} 的左边已经没有结点了。',
-    goRightEnd: '{v} > {x}，往右走，可是 {x} 的右边已经没有结点了。',
-    equal: '{v} = {x}：树里已经有这个值，二叉搜索树不存重复值，本次插入结束。',
-    slotLeft: '走到空位了：{x} 的左孩子是空的，{v} 就挂在这里。',
-    slotRight: '走到空位了：{x} 的右孩子是空的，{v} 就挂在这里。',
-    done: '插入完成：一共比较了 {k} 次，{v} 成为 {x} 的{side}孩子，是一个叶子，在第 {d} 层。',
-    logLeft: '{v} < {x}，往左',
-    logRight: '{v} > {x}，往右',
-    logEqual: '{v} = {x}，已存在',
-    logEmpty: '还没有开始比较。',
-    total: '共比较 {k} 次',
-    totalEqual: '比较 {k} 次后发现重复，没有插入',
-    history: '这棵树上已插入：{list}',
-    historyEmpty: '可以连续插入几个值，看看新结点每次落在哪里。'
-  }
-};
-
 const calm = matchMedia('(prefers-reduced-motion: reduce)');
+let data;
 let plan;
 let player;
 let shown = null;
 let anim = 0;
 
-function init() {
-  const [min, max] = D1.range;
-  Object.assign($('#value'), { value: D1.defaultValue, min, max });
-  $('#size').value = D1.randomSize;
-  $('#size-out').textContent = D1.randomSize;
+async function init() {
+  data = await loadData('d1');
+  $('#kind').textContent = `交互方式：${data.interaction}`;
+  $('#title').textContent = data.title;
+  $('#question').textContent = data.question;
+  $('#code').innerHTML = data.rules.lines.map(line => `<li>${escapeHtml(line)}</li>`).join('');
+  $('#legend').textContent = data.rules.legend;
+  $('#tips-title').textContent = data.tips.title;
+  $('#tips').innerHTML = data.tips.items.map(tip => `<li>${escapeHtml(tip)}</li>`).join('');
+  const [min, max] = data.range;
+  Object.assign($('#value'), { value: data.defaultValue, min, max });
+  $('#size').value = data.randomSize;
+  $('#size-out').textContent = data.randomSize;
   player = new Player($('#player'), show);
   $('#insert').addEventListener('click', startInsert);
   $('#value').addEventListener('keydown', e => {
@@ -45,7 +26,7 @@ function init() {
   $('#random-value').addEventListener('click', () => {
     $('#value').value = randomValue();
   });
-  $('#preset').addEventListener('click', () => setTree(BST.build(D1.presetTree)));
+  $('#preset').addEventListener('click', () => setTree(BST.build(data.presetTree)));
   $('#random-tree').addEventListener('click', () => setTree(randomTree(Number($('#size').value))));
   $('#size').addEventListener('input', () => {
     $('#size-out').textContent = $('#size').value;
@@ -56,12 +37,12 @@ function init() {
     player.pause();
     player.go(Number(button.dataset.step));
   });
-  setTree(BST.build(D1.presetTree));
+  setTree(BST.build(data.presetTree));
 }
 
 function setTree(tree) {
-  const [min, max] = D1.range;
-  plan = { before: tree, after: tree, value: null, added: [], steps: [{ kind: 'idle', path: [], line: 0, text: fill(D1.text.idle, { min, max }) }] };
+  const [min, max] = data.range;
+  plan = { before: tree, after: tree, value: null, added: [], steps: [{ kind: 'idle', path: [], line: 0, text: fill(data.text.idle, { min, max }) }] };
   shown = null;
   player.load(1);
 }
@@ -69,9 +50,9 @@ function setTree(tree) {
 function startInsert() {
   const raw = $('#value').value.trim();
   const v = Number(raw);
-  const [min, max] = D1.range;
+  const [min, max] = data.range;
   if (raw === '' || !Number.isInteger(v) || v < min || v > max) {
-    $('#status').innerHTML = fill(D1.text.invalid, { min, max });
+    $('#status').innerHTML = fill(data.text.invalid, { min, max });
     $('#value').focus();
     return;
   }
@@ -82,7 +63,7 @@ function startInsert() {
 }
 
 function makePlan(root, v, added) {
-  const t = D1.text;
+  const t = data.text;
   const steps = [{ kind: 'start', path: [], line: 1, text: fill(t.start, { v, root: root.v }) }];
   const path = [];
   let cur = root;
@@ -100,7 +81,7 @@ function makePlan(root, v, added) {
     steps.push({ kind: 'compare', at: cur.v, left, path: [...path], line: left ? 2 : 3, text, log: fill(left ? t.logLeft : t.logRight, { v, x: cur.v }) });
     if (!next) {
       steps.push({ kind: 'slot', at: cur.v, path: [...path], line: 5, text: fill(left ? t.slotLeft : t.slotRight, { v, x: cur.v }) });
-      steps.push({ kind: 'attach', at: v, path: [...path, v], line: 6, text: fill(t.done, { v, x: cur.v, side: left ? '左' : '右', k: path.length, d: path.length + 1 }) });
+      steps.push({ kind: 'attach', at: v, path: [...path, v], line: 6, text: fill(left ? t.doneLeft : t.doneRight, { v, x: cur.v, k: path.length, d: path.length + 1 }) });
       return { before: root, after: BST.insert(BST.clone(root), v), value: v, added, steps };
     }
     cur = next;
@@ -227,7 +208,7 @@ function decorate({ point, overlay, r }, step, badge) {
 }
 
 function renderLog(i) {
-  const t = D1.text;
+  const t = data.text;
   const rows = [];
   plan.steps.forEach((step, k) => {
     if (k <= i && step.log) rows.push(`<li${k === i ? ' class="current"' : ''}><button type="button" data-step="${k}">${step.log}</button></li>`);
@@ -240,11 +221,11 @@ function renderLog(i) {
 
 function renderHistory(step) {
   const list = step.kind === 'attach' ? [...plan.added, plan.value] : plan.added;
-  $('#history').innerHTML = list.length ? fill(D1.text.history, { list: list.join('、') }) : escapeHtml(D1.text.historyEmpty);
+  $('#history').innerHTML = list.length ? fill(data.text.history, { list: list.join('、') }) : escapeHtml(data.text.historyEmpty);
 }
 
 function randomValue() {
-  const [min, max] = D1.range;
+  const [min, max] = data.range;
   const used = new Set(BST.inorder(plan.after));
   const free = [];
   for (let v = min; v <= max; v++) if (!used.has(v)) free.push(v);
@@ -252,7 +233,7 @@ function randomValue() {
 }
 
 function randomTree(n) {
-  const [min, max] = D1.range;
+  const [min, max] = data.range;
   const pool = Array.from({ length: max - min + 1 }, (_, i) => min + i);
   let best = null;
   for (let t = 0; t < 40; t++) {
@@ -262,4 +243,4 @@ function randomTree(n) {
   return best;
 }
 
-init();
+init().catch(console.error);

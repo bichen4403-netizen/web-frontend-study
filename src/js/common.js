@@ -18,6 +18,22 @@ function renderNav() {
     PAGES.map(([id, href, name]) => `<a class="link${id === current ? ' active' : ''}" href="${href}">${name}</a>`).join('');
 }
 
+async function loadData(name) {
+  try {
+    const res = await fetch(`../data/${name}.json`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    if (!$('.load-error')) {
+      const box = document.createElement('p');
+      box.className = 'load-error';
+      box.textContent = `没有读到 data/${name}.json。请用 http 方式打开页面（在线部署地址，或 VS Code 的 Live Server），不要直接双击 HTML 文件。`;
+      $('main').prepend(box);
+    }
+    throw err;
+  }
+}
+
 function escapeHtml(text) {
   return String(text).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 }

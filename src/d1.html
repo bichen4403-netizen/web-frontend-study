@@ -12,9 +12,9 @@
 <nav id="nav"></nav>
 <main class="page">
   <header class="page-head">
-    <span class="kind">交互方式：步进推演</span>
-    <h1>难点 1：插入时的比较路径</h1>
-    <p class="question">插入一个新值时，它要先后和哪些结点比较？每次为什么往左或往右？最后挂在哪里？</p>
+    <span class="kind" id="kind"></span>
+    <h1 id="title"></h1>
+    <p class="question" id="question"></p>
   </header>
   <div class="layout">
     <div class="main">
@@ -25,15 +25,8 @@
       </section>
       <section class="card rules">
         <h2>插入规则</h2>
-        <ol class="code" id="code">
-          <li>cur ← 根结点</li>
-          <li>若 v &lt; cur：cur ← cur 的左孩子</li>
-          <li>若 v &gt; cur：cur ← cur 的右孩子</li>
-          <li>若 v = cur：树里已有 v，不再插入</li>
-          <li>重复 2～4，直到 cur 走到空位</li>
-          <li>把 v 放进这个空位，成为叶子</li>
-        </ol>
-        <p class="hint">v 是要插入的值，cur 是正在比较的结点。高亮的一行就是当前这一步在做的事。</p>
+        <ol class="code" id="code"></ol>
+        <p class="hint" id="legend"></p>
       </section>
     </div>
     <aside class="side">
@@ -61,12 +54,8 @@
         <ol id="log" class="log"></ol>
       </div>
       <div class="card tips hidden" id="tips-card">
-        <h2>看出规律了吗？</h2>
-        <ul>
-          <li>每比较一次，只决定往左还是往右，一直走到空位为止。</li>
-          <li>新结点总是挂在空位上成为叶子，不会插进树的中间。</li>
-          <li>比较次数等于新结点上面的祖先个数，树越高，最多要比较的次数越多。</li>
-        </ul>
+        <h2 id="tips-title"></h2>
+        <ul id="tips"></ul>
       </div>
     </aside>
   </div>
