@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>二叉搜索树：三个难点的交互演示</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/common.js" defer></script>
+</head>
+<body data-page="index">
+<nav id="nav"></nav>
+<main class="page">
+  <header class="hero">
+    <span class="kind">Web前端开发课程项目 · 数据结构</span>
+    <h1>二叉搜索树：三个难点的交互演示</h1>
+    <p class="question">建议按 1 → 2 → 3 的顺序学：先看懂一次插入怎么走，再看删除时有序性怎么保住，最后看插入顺序怎样决定整棵树的形状。</p>
+  </header>
+  <div class="cards">
+    <a class="card entry" href="d1.html">
+      <span class="step">1</span>
+      <h2>难点 1：插入时的比较路径</h2>
+      <p>一步一步看新值从根出发跟谁比、往哪走、最后挂在哪。</p>
+      <span class="kind">交互方式：步进推演</span>
+    </a>
+    <a class="card entry" href="d2.html">
+      <span class="step">2</span>
+      <h2>难点 2：双孩子删除为何用后继替换</h2>
+      <p>删掉一个有两个孩子的结点，空位该由谁来补？你来选，系统来判。</p>
+      <span class="kind">交互方式：操作判定</span>
+    </a>
+    <a class="card entry" href="d3.html">
+      <span class="step">3</span>
+      <h2>难点 3：插入顺序导致退化</h2>
+      <p>同一组数换个顺序插入，树高能差一倍多。几棵树并排长给你看。</p>
+      <span class="kind">交互方式：对照比较</span>
+    </a>
+  </div>
+</main>
+</body>
+</html>
