@@ -15,13 +15,17 @@ loadData('d1').then(function (d) {
   startInsert();
 });
 
-function startInsert() {
+function readValue() {
   let v = Number(document.getElementById('value').value);
-  if (!Number.isInteger(v) || v < data.min || v > data.max) {
-    pause();
-    document.getElementById('note').textContent = fmt(data.text.invalid, { min: data.min, max: data.max });
-    return;
-  }
+  if (Number.isInteger(v) && v >= data.min && v <= data.max) return v;
+  pause();
+  document.getElementById('note').textContent = fmt(data.text.invalid, { min: data.min, max: data.max });
+  return null;
+}
+
+function startInsert() {
+  let v = readValue();
+  if (v === null) return;
   value = v;
   initPlayer(buildSteps(baseValues, v), 0);
 }
@@ -39,6 +43,7 @@ function randomValue() {
 }
 
 function setTree(values) {
+  if (readValue() === null) return;
   baseValues = values;
   startInsert();
 }

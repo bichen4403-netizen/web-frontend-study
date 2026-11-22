@@ -80,7 +80,7 @@ button.wide { width: 100%; }
 .node.clickable:hover circle { stroke: var(--blue); stroke-width: 3; }
 .ghost circle { fill: #fff; stroke: var(--green); stroke-width: 2.5; stroke-dasharray: 6 5; }
 .ghost text { fill: var(--green); opacity: .75; }
-.arrow { stroke: var(--orange); stroke-width: 3; marker-end: url(#arrowhead); }
+.arrow { stroke: var(--orange); stroke-width: 3; }
 .arrowhead { fill: var(--orange); }
 .top-label { font-size: 15px; font-weight: 600; fill: var(--orange); text-anchor: middle; }
 

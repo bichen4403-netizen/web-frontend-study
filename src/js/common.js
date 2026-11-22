@@ -134,9 +134,8 @@ function drawTree(svg, root, opt) {
   }
   addNode(root);
 
-  let defs = '<defs><marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path class="arrowhead" d="M0,0 L10,5 L0,10 z"></path></marker></defs>';
   svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
-  svg.innerHTML = defs + edges + nodes;
+  svg.innerHTML = edges + nodes;
 
   if (opt.onClick) {
     let list = svg.querySelectorAll('.node');
@@ -155,13 +154,18 @@ function arrowSvg(p, q) {
   let len = Math.sqrt(dx * dx + dy * dy);
   let ux = dx / len;
   let uy = dy / len;
-  return '<line class="arrow" x1="' + (p.x + ux * 25) + '" y1="' + (p.y + uy * 25) + '" x2="' + (q.x - ux * 27) + '" y2="' + (q.y - uy * 27) + '"></line>';
+  let tx = q.x - ux * 25;
+  let ty = q.y - uy * 25;
+  let bx = tx - ux * 12;
+  let by = ty - uy * 12;
+  let head = tx + ',' + ty + ' ' + (bx - uy * 6) + ',' + (by + ux * 6) + ' ' + (bx + uy * 6) + ',' + (by - ux * 6);
+  return '<line class="arrow" x1="' + (p.x + ux * 25) + '" y1="' + (p.y + uy * 25) + '" x2="' + bx + '" y2="' + by + '"></line><polygon class="arrowhead" points="' + head + '"></polygon>';
 }
 
 let steps = [];
 let cursor = 0;
 let timer = null;
-let speed = 800;
+let speed = 600;
 
 function initPlayer(list, start) {
   pause();
@@ -194,7 +198,7 @@ function prev() {
 }
 
 function play() {
-  if (timer) return;
+  if (timer || steps.length < 2) return;
   if (cursor === steps.length - 1) {
     cursor = 0;
     draw();
@@ -234,7 +238,7 @@ function updatePanel() {
 
 document.addEventListener('keydown', function (e) {
   let tag = e.target.tagName;
-  if (tag === 'INPUT' || tag === 'SELECT') return;
+  if (steps.length === 0 || tag === 'INPUT' || tag === 'SELECT') return;
   if (e.code === 'Space') {
     e.preventDefault();
     e.target.blur();
