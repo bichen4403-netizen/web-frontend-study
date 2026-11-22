@@ -12,6 +12,7 @@
   ],
   "presetTree": [50, 30, 70, 20, 40, 60, 80],
   "defaultValue": 35,
+  "randomSize": 7,
   "min": 1,
   "max": 99,
   "text": {

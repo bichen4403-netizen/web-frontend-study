@@ -26,12 +26,30 @@ function startInsert() {
   initPlayer(buildSteps(baseValues, v), 0);
 }
 
+function randomInt() {
+  return data.min + Math.floor(Math.random() * (data.max - data.min + 1));
+}
+
 function randomValue() {
   let v;
   do {
-    v = data.min + Math.floor(Math.random() * (data.max - data.min + 1));
+    v = randomInt();
   } while (baseValues.indexOf(v) >= 0);
   document.getElementById('value').value = v;
+}
+
+function setTree(values) {
+  baseValues = values;
+  startInsert();
+}
+
+function randomTree() {
+  let values = [];
+  while (values.length < data.randomSize) {
+    let v = randomInt();
+    if (values.indexOf(v) < 0) values.push(v);
+  }
+  setTree(values);
 }
 
 function buildSteps(values, v) {
@@ -56,7 +74,7 @@ function buildSteps(values, v) {
     if (child) note = fmt(left ? t.goLeft : t.goRight, { v: v, x: cur.v, next: child.v });
     else note = fmt(left ? t.goLeftEnd : t.goRightEnd, { v: v, x: cur.v });
     log.push(fmt(left ? t.logLeft : t.logRight, { v: v, x: cur.v }));
-    list.push({ path: path.slice(), cur: cur.v, line: left ? 2 : 3, note: note, log: log.slice() });
+    list.push({ path: path.slice(), cur: cur.v, to: child ? child.v : v, line: left ? 2 : 3, note: note, log: log.slice() });
 
     if (child === null) {
       list.push({ path: path.slice(), cur: null, ghost: true, line: 5, note: fmt(left ? t.slotLeft : t.slotRight, { v: v, x: cur.v }), log: log.slice() });
@@ -88,9 +106,12 @@ function render(state) {
   else if (isNew && !state.done) opt.hidden = value;
 
   let box = drawTree(svg, tree, opt);
+  let extra = '';
+  if (state.to !== undefined) extra += arrowSvg(box.pos[state.cur], box.pos[state.to]);
   if (!state.done && !state.same) {
-    svg.innerHTML += '<text class="top-label" x="' + box.w / 2 + '" y="24">' + fmt(data.text.label, { v: value }) + '</text>';
+    extra += '<text class="top-label" x="' + box.w / 2 + '" y="24">' + fmt(data.text.label, { v: value }) + '</text>';
   }
+  svg.innerHTML += extra;
 
   document.getElementById('note').textContent = state.note;
 

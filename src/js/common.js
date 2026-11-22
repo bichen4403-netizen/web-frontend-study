@@ -134,8 +134,9 @@ function drawTree(svg, root, opt) {
   }
   addNode(root);
 
+  let defs = '<defs><marker id="arrowhead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path class="arrowhead" d="M0,0 L10,5 L0,10 z"></path></marker></defs>';
   svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
-  svg.innerHTML = edges + nodes;
+  svg.innerHTML = defs + edges + nodes;
 
   if (opt.onClick) {
     let list = svg.querySelectorAll('.node');
@@ -145,7 +146,16 @@ function drawTree(svg, root, opt) {
       });
     }
   }
-  return { w: w, h: h };
+  return { w: w, h: h, pos: pos };
+}
+
+function arrowSvg(p, q) {
+  let dx = q.x - p.x;
+  let dy = q.y - p.y;
+  let len = Math.sqrt(dx * dx + dy * dy);
+  let ux = dx / len;
+  let uy = dy / len;
+  return '<line class="arrow" x1="' + (p.x + ux * 25) + '" y1="' + (p.y + uy * 25) + '" x2="' + (q.x - ux * 27) + '" y2="' + (q.y - uy * 27) + '"></line>';
 }
 
 let steps = [];
