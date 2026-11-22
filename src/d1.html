@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>难点 1 · 插入时的比较路径</title>
 <link rel="stylesheet" href="css/style.css">
-<script src="js/common.js" defer></script>
-<script src="js/d1.js" defer></script>
 </head>
 <body data-page="d1">
 <nav id="nav"></nav>
@@ -19,46 +17,47 @@
   <div class="layout">
     <div class="main">
       <section class="card stage">
-        <svg id="tree" class="tree" role="img" aria-label="二叉搜索树"></svg>
-        <div id="player"></div>
-        <p class="hint">键盘：← → 单步，空格 播放 / 暂停</p>
+        <svg id="tree" class="tree"></svg>
+        <div class="player">
+          <button id="btn-prev" onclick="prev()">← 上一步</button>
+          <button id="btn-play" class="primary" onclick="if (timer) pause(); else play();">播放</button>
+          <button id="btn-next" onclick="next()">下一步 →</button>
+          <button onclick="reset()">重置</button>
+          <select onchange="setSpeed(Number(this.value))">
+            <option value="1200">慢 ×1</option>
+            <option value="800" selected>中 ×2</option>
+            <option value="350">快 ×4</option>
+          </select>
+          <span id="progress" class="progress"></span>
+        </div>
+        <p class="hint">键盘：空格 播放 / 暂停，← → 单步</p>
       </section>
       <section class="card rules">
         <h2>插入规则</h2>
         <ol class="code" id="code"></ol>
-        <p class="hint" id="legend"></p>
       </section>
     </div>
     <aside class="side">
       <div class="card">
         <h2>插入一个值</h2>
         <div class="row">
-          <input id="value" type="number" aria-label="要插入的值">
-          <button id="random-value">随机一个值</button>
+          <input id="value" type="number">
+          <button onclick="randomValue()">随机一个值</button>
         </div>
-        <button id="insert" class="primary wide">开始插入</button>
-        <p class="history" id="history"></p>
-        <h2 class="sub">初始树</h2>
-        <div class="row">
-          <button id="preset">默认树</button>
-          <button id="random-tree">随机生成</button>
-        </div>
-        <label class="slider">结点数<input id="size" type="range" min="3" max="15"><output id="size-out"></output></label>
+        <button class="primary wide" onclick="startInsert()">开始插入</button>
       </div>
       <div class="card status">
         <h2>当前步骤</h2>
-        <p id="status" aria-live="polite"></p>
+        <p id="note"></p>
       </div>
       <div class="card">
         <h2>比较记录</h2>
         <ol id="log" class="log"></ol>
       </div>
-      <div class="card tips hidden" id="tips-card">
-        <h2 id="tips-title"></h2>
-        <ul id="tips"></ul>
-      </div>
     </aside>
   </div>
 </main>
+<script src="js/common.js"></script>
+<script src="js/d1.js"></script>
 </body>
 </html>

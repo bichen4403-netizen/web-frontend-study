@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>难点 3 · 插入顺序导致退化</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="d3">
+<nav id="nav"></nav>
+<main class="page">
+  <header class="page-head">
+    <span class="kind" id="kind"></span>
+    <h1 id="title"></h1>
+    <p class="question" id="question"></p>
+  </header>
+  <div class="card panel-box">
+    <div class="options">
+      <label>左边的插入顺序 <select id="sel-a" onchange="changeOrder()"></select></label>
+      <label>右边的插入顺序 <select id="sel-b" onchange="changeOrder()"></select></label>
+    </div>
+    <p id="note" class="big-note"></p>
+    <div class="player">
+      <button id="btn-prev" onclick="prev()">← 上一步</button>
+      <button id="btn-play" class="primary" onclick="if (timer) pause(); else play();">播放</button>
+      <button id="btn-next" onclick="next()">下一步 →</button>
+      <button onclick="reset()">重置</button>
+      <select onchange="setSpeed(Number(this.value))">
+        <option value="1200">慢 ×1</option>
+        <option value="800" selected>中 ×2</option>
+        <option value="350">快 ×4</option>
+      </select>
+      <span id="progress" class="progress"></span>
+    </div>
+  </div>
+  <div class="columns">
+    <section class="card column">
+      <h2 id="name-a"></h2>
+      <div class="chips" id="chips-a"></div>
+      <svg id="tree-a" class="tree"></svg>
+      <p class="stat" id="stat-a"></p>
+    </section>
+    <section class="card column">
+      <h2 id="name-b"></h2>
+      <div class="chips" id="chips-b"></div>
+      <svg id="tree-b" class="tree"></svg>
+      <p class="stat" id="stat-b"></p>
+    </section>
+  </div>
+</main>
+<script src="js/common.js"></script>
+<script src="js/d3.js"></script>
+</body>
+</html>

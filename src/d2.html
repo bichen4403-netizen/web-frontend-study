@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>难点 2 · 双孩子删除为何用后继替换</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="d2">
+<nav id="nav"></nav>
+<main class="page">
+  <header class="page-head">
+    <span class="kind" id="kind"></span>
+    <h1 id="title"></h1>
+    <p class="question" id="question"></p>
+  </header>
+  <div class="layout">
+    <div class="main">
+      <section class="card stage">
+        <svg id="tree" class="tree"></svg>
+        <div class="player">
+          <button id="btn-prev" onclick="prev()">← 上一步</button>
+          <button id="btn-play" class="primary" onclick="if (timer) pause(); else play();">播放</button>
+          <button id="btn-next" onclick="next()">下一步 →</button>
+          <button onclick="reset()">重置</button>
+          <select onchange="setSpeed(Number(this.value))">
+            <option value="1200">慢 ×1</option>
+            <option value="800" selected>中 ×2</option>
+            <option value="350">快 ×4</option>
+          </select>
+          <span id="progress" class="progress"></span>
+        </div>
+        <p class="hint">直接在树上点结点；键盘：空格 播放 / 暂停，← → 单步</p>
+      </section>
+    </div>
+    <aside class="side">
+      <div class="card">
+        <h2>怎么操作</h2>
+        <ol class="steps-guide" id="guide"></ol>
+        <h2 class="sub">初始树</h2>
+        <select id="tree-select" onchange="chooseTree(Number(this.value))"></select>
+      </div>
+      <div class="card status">
+        <h2>当前步骤</h2>
+        <p id="note"></p>
+      </div>
+      <div class="card">
+        <h2>你的选择</h2>
+        <p id="choice" class="choice"></p>
+      </div>
+    </aside>
+  </div>
+</main>
+<script src="js/common.js"></script>
+<script src="js/d2.js"></script>
+</body>
+</html>

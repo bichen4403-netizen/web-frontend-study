@@ -140,3 +140,12 @@ button.wide { width: 100%; }
   .page { padding: 16px; }
   .player .speed { margin-left: 0; }
 }
+
+.top-label { font-size: 15px; font-weight: 600; fill: var(--orange); text-anchor: middle; }
+select { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+.choice { margin: 0; font-size: 15px; }
+.panel-box { margin-top: 20px; }
+.options { display: flex; flex-wrap: wrap; gap: 24px; font-size: 14px; color: var(--muted); }
+.options label { display: flex; align-items: center; gap: 8px; }
+.big-note { margin: 14px 0 0; min-height: 1.6em; font-size: 16px; }
+.column .tree { max-height: 60vh; }
